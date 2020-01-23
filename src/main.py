@@ -1,5 +1,7 @@
 from ui import UI
+from ui import Point
 
+global ui
 
 def clean_canvas():
     print("Clean")
@@ -7,7 +9,7 @@ def clean_canvas():
 
 def save_model():
     print("Save")
-
+    ui.draw_car(Point(50, 50), 0)
 
 def load_model():
     print("Load")
@@ -18,9 +20,10 @@ def put_sand(point):
 
 
 if __name__ == '__main__':
-    UI(
+    ui = UI(
         on_cls=clean_canvas,
         on_save=save_model,
         on_load=load_model,
         on_create_sand=put_sand
-    ).loop()
+    )
+    ui.loop()
