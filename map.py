@@ -6,6 +6,9 @@ from random import random, randint
 import matplotlib.pyplot as plt
 import time
 
+import os
+os.environ['KIVY_GL_BACKEND'] = 'sdl2'
+
 # Importing the Kivy packages
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -17,7 +20,8 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 
 # Importing the Dqn object from our AI in ai.py
-from ai import Dqn
+from my_ai import Dqn
+# from ai import Dqn
 
 # Adding this line if we don't want the right click to put a red point
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
