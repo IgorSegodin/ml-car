@@ -1,5 +1,8 @@
 import tkinter as tk
 
+import math_util
+from math_util import Point
+
 # ------------------
 # |                |
 # |    Canvas      |
@@ -35,15 +38,6 @@ car_sensor_3_points = [
 ]
 
 car_size = 5
-
-
-class Point:
-    x = 0
-    y = 0
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
 
 
 class UI:
@@ -104,7 +98,7 @@ class UI:
             # Y axis flip: source positive down -> target positive up
             self._call_on_create_sand(Point(x, self._canvas_height - y))
 
-    def draw_car(self, point, orientation):
+    def draw_car(self, center_point, orientation):
         """
         Center point (East=Positive X, North=Positive Y)
         Orientation angle (East=0, North=90, West=180, South=270)
@@ -113,42 +107,53 @@ class UI:
         self.canvas.find_withtag('car')
 
         self.canvas.create_polygon(
-            self._format_points(car_points, point, car_size),
+            self._format_points(car_points, center_point, orientation, car_size),
             outline='green',
             fill='green',
             tag='car'
         )
         self.canvas.create_polygon(
-            self._format_points(car_sensor_1_points, point, car_size),
+            self._format_points(car_sensor_1_points, center_point, orientation, car_size),
             outline='red',
             fill='red',
             tag='car_sensor_1'
         )
         self.canvas.create_polygon(
-            self._format_points(car_sensor_2_points, point, car_size),
+            self._format_points(car_sensor_2_points, center_point, orientation, car_size),
             outline='red',
             fill='red',
             tag='car_sensor_2'
         )
         self.canvas.create_polygon(
-            self._format_points(car_sensor_3_points, point, car_size),
+            self._format_points(car_sensor_3_points, center_point, orientation, car_size),
             outline='red',
             fill='red',
             tag='car_sensor_3'
         )
 
-    def _format_points(self, polygon_points, center_point, size):
+    def _format_points(self, polygon_points, center_point, orientation, size):
+        rotated_points = self._rotate_points(polygon_points, orientation)
         formatted_points = []
-        for i, p in enumerate(polygon_points):
+        for i, p in enumerate(rotated_points):
             y_axis = i % 2 != 0
-            p_s = polygon_points[i] * size
+            p_s = rotated_points[i] * size
             p_t = p_s + (center_point.y if y_axis else center_point.x)
             formatted_points.append(p_t)
-            # TODO rotate before axis flip: http://effbot.org/zone/tkinter-complex-canvas.htm
             # Y axis flip: source positive up -> target positive down
             if y_axis:
                 formatted_points[i] = self._canvas_height - formatted_points[i]
         return formatted_points
+
+    def _rotate_points(self, points, angle):
+        rotated_points = []
+        for i, p in enumerate(points):
+            y_axis = i % 2 != 0
+            if y_axis:
+                rp = math_util.rotate_point(Point(points[i - 1], points[i]), angle)
+                rotated_points.append(rp.x)
+                rotated_points.append(rp.y)
+
+        return rotated_points
 
     def loop(self):
         self.root.mainloop()

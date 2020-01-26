@@ -1,7 +1,8 @@
+from math_util import Point
 from ui import UI
-from ui import Point
 
 global ui
+
 
 def clean_canvas():
     print("Clean")
@@ -10,6 +11,7 @@ def clean_canvas():
 def save_model():
     print("Save")
     ui.draw_car(Point(50, 50), 0)
+
 
 def load_model():
     print("Load")

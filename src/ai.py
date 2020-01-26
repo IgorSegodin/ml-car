@@ -107,7 +107,7 @@ class Dqn:
         torch.save(
             {
                 'state_dict': self.model.state_dict(),
-                'self_optimizer': self.optimizer.state_dict()
+                'optimizer': self.optimizer.state_dict()
             },
             'last_brain.pth'
         )
