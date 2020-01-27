@@ -25,6 +25,7 @@ def put_sand(point):
 def loop():
     ui.draw_car(world.get_car_point(), world.get_car_orientation())
     world.rotate_car(20)
+    world.process_tick(1000)
     # TODO tick
     # TODO update sensor data
 
