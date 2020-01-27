@@ -103,33 +103,47 @@ class UI:
         Center point (East=Positive X, North=Positive Y)
         Orientation angle (East=0, North=90, West=180, South=270)
         """
-        # TODO do not create if already exists
-        self.canvas.find_withtag('car')
 
-        self.canvas.create_polygon(
+        self._create_or_update(
             self._format_points(car_points, center_point, orientation, car_size),
-            outline='green',
-            fill='green',
-            tag='car'
+            'green',
+            'car'
         )
-        self.canvas.create_polygon(
+        self._create_or_update(
             self._format_points(car_sensor_1_points, center_point, orientation, car_size),
-            outline='red',
-            fill='red',
-            tag='car_sensor_1'
+            'red',
+            'car_sensor_1'
         )
-        self.canvas.create_polygon(
+        self._create_or_update(
             self._format_points(car_sensor_2_points, center_point, orientation, car_size),
-            outline='red',
-            fill='red',
-            tag='car_sensor_2'
+            'red',
+            'car_sensor_2'
         )
-        self.canvas.create_polygon(
+        self._create_or_update(
             self._format_points(car_sensor_3_points, center_point, orientation, car_size),
-            outline='red',
-            fill='red',
-            tag='car_sensor_3'
+            'red',
+            'car_sensor_3'
         )
+
+    def _create_or_update(self, points, color, tag):
+        existing_ids = self.canvas.find_withtag(tag)
+
+        if len(existing_ids) == 0:
+            self.canvas.create_polygon(
+                points,
+                outline=color,
+                fill=color,
+                tag=tag
+            )
+        else:
+            item_id = existing_ids[0]
+            self.canvas.coords(item_id, points)
+            self.canvas.itemconfig(
+                item_id,
+                outline=color,
+                fill=color,
+                tag=tag
+            )
 
     def _format_points(self, polygon_points, center_point, orientation, size):
         rotated_points = self._rotate_points(polygon_points, orientation)
