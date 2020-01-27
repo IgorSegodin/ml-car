@@ -1,5 +1,9 @@
 from math_util import Point
 from ui import UI
+from world import World
+
+global ui
+global world
 
 
 def clean_canvas():
@@ -19,16 +23,16 @@ def put_sand(point):
 
 
 def loop():
-    global car_orientation
-    ui.draw_car(Point(50, 50), car_orientation)
-    car_orientation = car_orientation + 20
+    ui.draw_car(world.get_car_point(), world.get_car_orientation())
+    world.rotate_car(20)
+    # TODO tick
+    # TODO update sensor data
 
     ui.root.after(1000, loop)
 
 
 if __name__ == '__main__':
-    global ui
-    global car_orientation
+    world = World(Point(50, 50), 0)
 
     ui = UI(
         on_cls=clean_canvas,
@@ -36,8 +40,6 @@ if __name__ == '__main__':
         on_load=load_model,
         on_create_sand=put_sand
     )
-
-    car_orientation = 0
 
     loop()
 
