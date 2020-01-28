@@ -125,6 +125,21 @@ class UI:
             'car_sensor_3'
         )
 
+    def get_sensor_data(self, sensor_number_id):
+        existing_ids = self.canvas.find_withtag('car_sensor_' + str(sensor_number_id))
+        item_id = existing_ids[0]
+        points = self.canvas.coords(item_id)
+
+        y1 = 0
+        x1 = 0
+        x2 = 0
+        y2 = 0
+
+        for i, p in enumerate(points):
+            y_axis = i % 2 != 0
+        #     TODO
+        overlapping_items = self.canvas.find_overlapping(x1, y1, x2, y2)
+
     def _create_or_update(self, points, color, tag):
         existing_ids = self.canvas.find_withtag(tag)
 

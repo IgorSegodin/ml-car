@@ -25,12 +25,27 @@ class World:
     def get_car_orientation(self):
         return self._car['orientation']
 
-    def update_sensor_data(self, sensor_1, sensor_2, sensor_3):
+    def _update_sensor_data(self, sensor_1, sensor_2, sensor_3):
         self._sensor_data = {
             'sensor_1': sensor_1,
             'sensor_2': sensor_2,
             'sensor_3': sensor_3
         }
+
+    def _calc_sensor_data(self, sensor_position):
+        # TODO
+        return 2
+        # self.signal1 = int(
+        #     np.sum(
+        #         sand[
+        #         int(self.sensor1_x) - 10: int(self.sensor1_x) + 10,
+        #         int(self.sensor1_y) - 10: int(self.sensor1_y) + 10
+        #         ]
+        #     )
+        # ) / 400.  # getting the signal received by sensor 1 (density of sand around sensor 1)
+        #
+        # if self.sensor1_x > longueur - 10 or self.sensor1_x < 10 or self.sensor1_y > largeur - 10 or self.sensor1_y < 10:  # if sensor 1 is out of the map (the car is facing one edge of the map)
+        #     self.signal1 = 1.  # sensor 1 detects full sand
 
     def rotate_car(self, angle_delta_degrees):
         self._car['orientation'] = self.get_car_orientation() + angle_delta_degrees

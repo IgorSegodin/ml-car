@@ -1,9 +1,16 @@
 from math_util import Point
 from ui import UI
 from world import World
+from ai import Dqn
 
 global ui
 global world
+
+brain = Dqn(5,3,0.9) # 5 sensors, 3 actions, gama = 0.9
+action2rotation = [0,20,-20] # action = 0 => no rotation, action = 1 => rotate 20 degres, action = 2 => rotate -20 degres
+last_reward = 0 # initializing the last reward
+scores = [] # initializing the mean score curve (sliding window of the rewards) with respect to time
+
 
 
 def clean_canvas():
