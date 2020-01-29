@@ -37,6 +37,24 @@ class World:
     def clear_sand(self):
         self._sand = np.zeros((self._width, self._height))
 
+    def check_car_is_on_sand(self):
+        car_point = self.get_car_point()
+        x1 = car_point.x - 5,
+        y1 = car_point.y - 5,
+        x2 = car_point.x + 5,
+        y2 = car_point.y + 5
+        return np.sum(self._sand[x1: x2, y1: y2]) > 0
+
+    def check_car_outside_border(self):
+        car_point = self.get_car_point()
+        border_width = 10
+        return (
+                car_point.x < border_width
+                or car_point.x > self._width - border_width
+                or car_point.y < border_width
+                or car_point.y > self._height - border_width
+        )
+
     def get_sensor_data(self, sensor_number_id):
         return self._sensor_data['sensor_' + str(sensor_number_id)]
 

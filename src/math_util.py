@@ -14,6 +14,15 @@ class Point:
         return Point(self.x + other.x, self.y + other.y)
 
 
+class Vector:
+    magnitude = 0
+    orientation = 0
+
+    def __init__(self, magnitude, orientation):
+        self.magnitude = magnitude
+        self.orientation = orientation
+
+
 def rotate_point(point, angle_degrees):
     """Rotate point around 0:0, with help of complex numbers"""
     rad = angle_degrees * math.pi / 180
@@ -26,10 +35,17 @@ def rotate_point(point, angle_degrees):
     return Point(v.real, v.imag)
 
 
-# def cartesian_to_polar(x, y):
-#     magnitude = np.sqrt(x ** 2 + y ** 2)
-#     rad = np.arctan2(y, x)
-#     return (magnitude, rad)
+def orientation_delta(source_angle, target_angle):
+    return ((target_angle - source_angle) + 180) % 360 - 180
+
+
+def cartesian_to_polar(x, y):
+    magnitude = math.sqrt(x ** 2 + y ** 2)
+    # rad = np.arctan2(y, x)
+    rad = math.atan2(y, x)
+    degrees = rad * 180 / math.pi
+
+    return Vector(magnitude, degrees)
 
 
 def polar_to_cartesian(magnitude, angle_degree):
