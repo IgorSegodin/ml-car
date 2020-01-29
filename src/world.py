@@ -39,15 +39,18 @@ class World:
 
     def check_car_is_on_sand(self):
         car_point = self.get_car_point()
-        x1 = car_point.x - 5,
-        y1 = car_point.y - 5,
-        x2 = car_point.x + 5,
-        y2 = car_point.y + 5
+        x = int(car_point.x)
+        y = int(car_point.y)
+        size = 5
+
+        x1 = x - size
+        y1 = y - size
+        x2 = x + size
+        y2 = y + size
         return np.sum(self._sand[x1: x2, y1: y2]) > 0
 
-    def check_car_outside_border(self):
+    def check_car_outside_border(self, border_width=0):
         car_point = self.get_car_point()
-        border_width = 10
         return (
                 car_point.x < border_width
                 or car_point.x > self._width - border_width
@@ -85,6 +88,14 @@ class World:
         car_speed_per_sec = 10
         mag = car_speed_per_sec * delta_time_millis / 1000
         move_point = math_util.polar_to_cartesian(mag, self.get_car_orientation())
+
+        previous_point = self.get_car_point()
+
         self._set_car_point(
             self.get_car_point() + move_point
         )
+
+        if self.check_car_outside_border():
+            self._set_car_point(
+                previous_point
+            )

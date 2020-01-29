@@ -45,7 +45,7 @@ def calc_distance_vector(car_point, goal_point):
 
 
 def calc_reward(last_distance, distance):
-    if world.check_car_outside_border():
+    if world.check_car_outside_border(border_width=10):
         return -1
     elif world.check_car_is_on_sand():
         # if the car is on the sand
@@ -66,7 +66,6 @@ def loop(dtm):
     ui.draw_car(world.get_car_point(), world.get_car_orientation())
 
     dts = dtm / 1000
-    world.rotate_car(20 * dts)
     world.update_sensor_data(1, ui.get_sensor_point(1))
     world.update_sensor_data(2, ui.get_sensor_point(2))
     world.update_sensor_data(3, ui.get_sensor_point(3))
@@ -97,8 +96,10 @@ def loop(dtm):
     last_reward = calc_reward(last_distance, distance)
     last_distance = distance
 
+    print("Action: %s, Reward %s, Dist: %s, input: %s" % (action, last_reward, last_distance, last_signal))
+
     if distance > 50:
-        ui.root.after(100, lambda: loop(1000))
+        ui.root.after(40, lambda: loop(1000))
     else:
         print('Destination reached')
 

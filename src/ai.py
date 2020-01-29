@@ -62,7 +62,7 @@ class Dqn:
     def select_action(self, input_state):
         q_values = self.model(Variable(input_state, volatile=True))
         probs = F.softmax(q_values * 7)  # temperature
-        return probs.multinomial().data[0, 0]
+        return probs.multinomial(1).data[0, 0].item()
 
     def learn(self, batch_state, batch_next_state, batch_reward, batch_action):
         outputs = self.model(batch_state) \
