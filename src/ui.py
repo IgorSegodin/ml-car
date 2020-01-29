@@ -42,7 +42,7 @@ car_size = 5
 
 class UI:
 
-    def __init__(self, on_cls, on_save, on_load, on_create_sand):
+    def __init__(self, width, height, on_cls, on_save, on_load, on_create_sand):
         self._call_on_cls = on_cls
         self._call_on_create_sand = on_create_sand
 
@@ -53,8 +53,8 @@ class UI:
 
         frame_canvas = tk.Frame(self.root)
         frame_canvas.pack()
-        self._canvas_width = 300
-        self._canvas_height = 300
+        self._canvas_width = width
+        self._canvas_height = height
         self.canvas = tk.Canvas(frame_canvas, width=self._canvas_width, height=self._canvas_height)
         self.canvas.config(bg='black')
         self.canvas.bind("<B1-Motion>", self._paint)
@@ -125,20 +125,39 @@ class UI:
             'car_sensor_3'
         )
 
-    def get_sensor_data(self, sensor_number_id):
+    # TODO move sensor coords to World
+    def get_sensor_point(self, sensor_number_id):
         existing_ids = self.canvas.find_withtag('car_sensor_' + str(sensor_number_id))
         item_id = existing_ids[0]
         points = self.canvas.coords(item_id)
 
-        y1 = 0
         x1 = 0
+        y1 = 0
         x2 = 0
         y2 = 0
 
         for i, p in enumerate(points):
             y_axis = i % 2 != 0
-        #     TODO
-        overlapping_items = self.canvas.find_overlapping(x1, y1, x2, y2)
+
+            if i <= 2:
+                if y_axis:
+                    y1 = p
+                    y2 = p
+                else:
+                    x1 = p
+                    x2 = p
+            else:
+                if y_axis:
+                    y1 = min(y1, p)
+                    y2 = max(y2, p)
+                else:
+                    x1 = min(x1, p)
+                    x2 = max(x2, p)
+
+        x = x1 + (x2 - x1) / 2
+        y = y1 + (y2 - y1) / 2
+
+        return Point(x, self._canvas_height - y)
 
     def _create_or_update(self, points, color, tag):
         existing_ids = self.canvas.find_withtag(tag)

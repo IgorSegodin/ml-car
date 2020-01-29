@@ -1,15 +1,18 @@
+import numpy as np
+
 import math_util
 
 
-# TODO Add width, height
 class World:
 
-    def __init__(self, car_point, car_orientation):
-        self._sand = []
+    def __init__(self, width, height, car_point, car_orientation):
+        self._width = width
+        self._height = height
+        self._sand = np.zeros((width, height))
         self._sensor_data = {
-            'sensor_1': 0,
-            'sensor_2': 0,
-            'sensor_3': 0
+            'sensor_1': 0.,
+            'sensor_2': 0.,
+            'sensor_3': 0.
         }
         self._car = {
             'point': car_point,
@@ -25,30 +28,40 @@ class World:
     def get_car_orientation(self):
         return self._car['orientation']
 
-    def _update_sensor_data(self, sensor_1, sensor_2, sensor_3):
-        self._sensor_data = {
-            'sensor_1': sensor_1,
-            'sensor_2': sensor_2,
-            'sensor_3': sensor_3
-        }
-
-    def _calc_sensor_data(self, sensor_position):
-        # TODO
-        return 2
-        # self.signal1 = int(
-        #     np.sum(
-        #         sand[
-        #         int(self.sensor1_x) - 10: int(self.sensor1_x) + 10,
-        #         int(self.sensor1_y) - 10: int(self.sensor1_y) + 10
-        #         ]
-        #     )
-        # ) / 400.  # getting the signal received by sensor 1 (density of sand around sensor 1)
-        #
-        # if self.sensor1_x > longueur - 10 or self.sensor1_x < 10 or self.sensor1_y > largeur - 10 or self.sensor1_y < 10:  # if sensor 1 is out of the map (the car is facing one edge of the map)
-        #     self.signal1 = 1.  # sensor 1 detects full sand
-
     def rotate_car(self, angle_delta_degrees):
         self._car['orientation'] = self.get_car_orientation() + angle_delta_degrees
+
+    def put_sand(self, point):
+        self._sand[point.x, point.y] = 1
+
+    def clear_sand(self):
+        self._sand = np.zeros((self._width, self._height))
+
+    def get_sensor_data(self, sensor_number_id):
+        return self._sensor_data['sensor_' + str(sensor_number_id)]
+
+    def update_sensor_data(self, sensor_number_id, point):
+        self._sensor_data['sensor_' + str(sensor_number_id)] = self._calc_sensor_data(point)
+
+    def _calc_sensor_data(self, sensor_position):
+        sensor_range = 10
+
+        x1 = int(sensor_position.x) - sensor_range
+        x2 = int(sensor_position.x) + sensor_range
+        y1 = int(sensor_position.y) - sensor_range
+        y2 = int(sensor_position.y) + sensor_range
+
+        # getting the signal received by sensor (density of sand around sensor )
+        sig = int(np.sum(self._sand[x1: x2, y1: y2])) / 400.
+
+        # if sensor is out of the map (the car is facing one edge of the map)
+        if sensor_position.x > self._width - 10 \
+                or sensor_position.x < 10 \
+                or sensor_position.y > self._height - 10 \
+                or sensor_position.y < 10:
+            sig = 1.  # sensor detects full sand
+
+        return sig
 
     def process_tick(self, delta_time_millis):
         car_speed_per_sec = 10
